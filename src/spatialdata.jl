@@ -43,14 +43,14 @@ valuetype(spatialdata::AbstractSpatialData, var::Symbol) = variables(spatialdata
 
 Return the variable names in `spatialdata` and their types.
 """
-variables(::AbstractSpatialData) = error("not implemented")
+variables(spatialdata::AbstractSpatialData) = Dict(var => eltype(array) for (var,array) in spatialdata.data)
 
 """
     npoints(spatialdata)
 
 Return the number of points in `spatialdata`.
 """
-npoints(::AbstractSpatialData) = error("not implemented")
+npoints(spatialdata::AbstractSpatialData) = npoints(spatialdata.domain)
 
 """
     coordinates(spatialdata, ind)
@@ -99,14 +99,15 @@ end
 
 Non-allocating version of [`coordinates`](@ref).
 """
-coordinates!(::AbstractVector, ::AbstractSpatialData, ::Int) = error("not implemented")
+coordinates!(buff::AbstractVector, spatialdata::AbstractSpatialData, ind::Int) =
+  coordinates!(buff, spatialdata.domain, ind)
 
 """
     value(spatialdata, ind, var)
 
 Return the value of `var` for the `ind`-th point in `spatialdata`.
 """
-value(::AbstractSpatialData, ::Int, ::Symbol) = error("not implemented")
+value(spatialdata::AbstractSpatialData, ind::Int, var::Symbol) = spatialdata.data[var][ind]
 
 """
     values(spatialdata, var)
@@ -161,3 +162,18 @@ Return a view of `spatialdata` with all points in `inds`.
 """
 Base.view(spatialdata::AbstractSpatialData,
           inds::AbstractVector{Int}) = SpatialDataView(spatialdata, inds)
+
+# ------------
+# IO methods
+# ------------
+function Base.show(io::IO, spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real}
+  npts = npoints(spatialdata)
+  print(io, "$npts SpatialData{$T,$N}")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real}
+  println(io, spatialdata)
+  println(io, "  variables")
+  varlines = ["    └─$var ($(eltype(array)))" for (var,array) in spatialdata.data]
+  print(io, join(varlines, "\n"))
+end
