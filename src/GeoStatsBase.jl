@@ -24,6 +24,9 @@ include("macros.jl")
 const AbstractDataOrDomain{T,N} = Union{AbstractSpatialData{T,N},
                                         AbstractDomain{T,N}}
 
+# spatial objects have a domain
+domain(object) = object.domain
+
 export
   # spatial data
   AbstractSpatialData,
@@ -70,8 +73,6 @@ export
   AbstractSolution,
   EstimationSolution,
   SimulationSolution,
-  domain,
-  digest,
 
   # solvers
   AbstractSolver,

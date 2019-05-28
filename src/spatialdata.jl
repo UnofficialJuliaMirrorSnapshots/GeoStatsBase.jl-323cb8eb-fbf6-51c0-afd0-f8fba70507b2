@@ -20,7 +20,7 @@ Base.ndims(::AbstractSpatialData{T,N}) where {N,T<:Real} = N
 """
     coordtype(spatialdata)
 
-Return the coordinate type of a spatial data.
+Return the coordinate type of `spatialdata`.
 """
 coordtype(::AbstractSpatialData{T,N}) where {N,T<:Real} = T
 
