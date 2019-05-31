@@ -39,6 +39,14 @@ Base.values(spatialdata::AbstractSpatialData, var::Symbol) =
   [value(spatialdata, ind, var) for ind in 1:npoints(spatialdata)]
 
 """
+    values(spatialdata)
+
+Return the values of all variables in `spatialdata`.
+"""
+Base.values(spatialdata::AbstractSpatialData) =
+  Dict(var => values(spatialdata, var) for (var,V) in variables(spatialdata))
+
+"""
     isvalid(spatialdata, ind, var)
 
 Return `true` if the `ind`-th point in `spatialdata` has a valid value for `var`.
@@ -56,7 +64,6 @@ is a tuple with the matrix of coordinates as the first item and the vector
 of values as the second item.
 """
 function valid(spatialdata::AbstractSpatialData{T,N}, var::Symbol) where {N,T<:Real}
-  # determine coordinate and value type
   V = valuetype(spatialdata, var)
   npts = npoints(spatialdata)
 
@@ -95,6 +102,6 @@ end
 function Base.show(io::IO, ::MIME"text/plain", spatialdata::AbstractSpatialData{T,N}) where {N,T<:Real}
   println(io, spatialdata)
   println(io, "  variables")
-  varlines = ["    └─$var ($(eltype(array)))" for (var,array) in spatialdata.data]
+  varlines = ["    └─$var ($V)" for (var,V) in variables(spatialdata)]
   print(io, join(varlines, "\n"))
 end
