@@ -96,40 +96,17 @@ coordinates!(buff::AbstractVector, object::AbstractSpatialObject, location::Int)
   coordinates!(buff, domain(object), location)
 
 """
-    coordextrema(object)
+    extent(object)
 
-Return the extrema of the coordinates of the `object`.
+Return the extent (i.e. bounds of each dimension) of the `object`.
 """
-function coordextrema(object::AbstractSpatialObject{T,N}) where {N,T<:Real}
-  lowerleft  = MVector(ntuple(i->typemax(T), N))
-  upperright = MVector(ntuple(i->typemin(T), N))
-
-  x = MVector{N,T}(undef)
-  for l in 1:npoints(object)
-    coordinates!(x, object, l)
-    for d in 1:N
-      x[d] < lowerleft[d]  && (lowerleft[d]  = x[d])
-      x[d] > upperright[d] && (upperright[d] = x[d])
-    end
-  end
-
-  lowerleft, upperright
-end
+extent(object::AbstractSpatialObject) = extent(domain(object))
 
 """
     nearestlocation(object, coords)
 
 Return the nearest location of `coords` in the `object`.
 """
-function nearestlocation(object::AbstractSpatialObject{T,N},
-                         coords::AbstractVector{T}) where {N,T<:Real}
-  lmin, dmin = 0, Inf
-  c = MVector{N,T}(undef)
-  for l in 1:npoints(object)
-    coordinates!(c, object, l)
-    d = norm(coords - c)
-    d < dmin && ((lmin, dmin) = (l, d))
-  end
-
-  lmin
-end
+nearestlocation(object::AbstractSpatialObject{T,N},
+                coords::AbstractVector{T}) where {N,T<:Real} =
+  nearestlocation(domain(object), coords)
