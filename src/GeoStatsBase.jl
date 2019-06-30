@@ -4,11 +4,20 @@
 
 module GeoStatsBase
 
-using LinearAlgebra
+using CSV
+using Random
+using StatsBase
+using Distances
+using Distributions
 using Distributed
+using LinearAlgebra
+using DataFrames
+using NearestNeighbors
 using StaticArrays
 using Parameters
+using RecipesBase
 
+# core concepts
 include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
@@ -19,7 +28,23 @@ include("problems.jl")
 include("solutions.jl")
 include("solvers.jl")
 include("comparisons.jl")
+
+# developer tools
 include("macros.jl")
+include("paths.jl")
+include("distances.jl")
+include("neighborhoods.jl")
+include("neighsearch.jl")
+include("distributions.jl")
+include("partitions.jl")
+include("weighting.jl")
+include("statistics.jl")
+
+# plot recipes
+include("plotrecipes.jl")
+
+# utilities
+include("utils.jl")
 
 export
   # spatial object
@@ -35,9 +60,18 @@ export
 
   # domains
   AbstractDomain,
+  PointSet,
+  RegularGrid,
+  StructuredGrid,
+  origin,
+  spacing,
 
   # spatial data
   AbstractSpatialData,
+  GeoDataFrame,
+  PointSetData,
+  RegularGridData,
+  StructuredGridData,
   variables,
   valuetype,
   value,
@@ -81,6 +115,67 @@ export
 
   # helper macros
   @estimsolver,
-  @simsolver
+  @simsolver,
+
+  # paths
+  AbstractPath,
+  SimplePath,
+  RandomPath,
+  SourcePath,
+  ShiftedPath,
+
+  # distances
+  Ellipsoidal,
+  evaluate,
+
+  # neighborhoods
+  AbstractNeighborhood,
+  BallNeighborhood,
+  CylinderNeighborhood,
+  isneighbor,
+
+  # neighborhood search
+  AbstractNeighborSearcher,
+  NearestNeighborSearcher,
+  LocalNeighborSearcher,
+  search!,
+
+  # distributions
+  EmpiricalDistribution,
+  transform!,
+  quantile,
+  cdf,
+
+  # partitions
+  SpatialPartition,
+  AbstractPartitioner,
+  AbstractFunctionPartitioner,
+  AbstractSpatialFunctionPartitioner,
+  UniformPartitioner,
+  FractionPartitioner,
+  BlockPartitioner,
+  BallPartitioner,
+  PlanePartitioner,
+  DirectionPartitioner,
+  FunctionPartitioner,
+  ProductPartitioner,
+  HierarchicalPartitioner,
+  partition,
+  subsets,
+  →,
+
+  # weighting
+  WeightedSpatialData,
+  AbstractWeighter,
+  BlockWeighter,
+  weight,
+
+  # statistics
+  SpatialStatistic,
+  mean, var,
+  quantile,
+
+  # utilities
+  readgeotable
 
 end
