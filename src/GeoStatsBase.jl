@@ -23,7 +23,9 @@ include("domains.jl")
 include("domainview.jl")
 include("spatialdata.jl")
 include("spatialdataview.jl")
+include("collections.jl")
 include("mappers.jl")
+include("tasks.jl")
 include("problems.jl")
 include("solutions.jl")
 include("solvers.jl")
@@ -60,14 +62,15 @@ export
 
   # domains
   AbstractDomain,
+  Curve,
   PointSet,
   RegularGrid,
   StructuredGrid,
-  origin,
-  spacing,
+  origin, spacing,
 
   # spatial data
   AbstractSpatialData,
+  CurveData,
   GeoDataFrame,
   PointSetData,
   RegularGridData,
@@ -77,17 +80,35 @@ export
   value,
   valid,
 
+  # collections
+  DomainCollection,
+  DataCollection,
+
   # mappers
   AbstractMapper,
   SimpleMapper,
   CopyMapper,
 
+  # tasks
+  AbstractLearningTask,
+  SupervisedLearningTask,
+  UnsupervisedLearningTask,
+  RegressionTask,
+  ClassificationTask,
+  ClusteringTask,
+  features, label,
+
   # problems
   AbstractProblem,
   EstimationProblem,
   SimulationProblem,
+  LearningProblem,
   data,
   domain,
+  sourcedata,
+  targetdata,
+  targetdomain,
+  task,
   mapper,
   variables,
   coordinates,
