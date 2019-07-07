@@ -4,18 +4,21 @@
 
 module GeoStatsBase
 
-using CSV
-using Random
-using StatsBase
-using Distances
-using Distributions
-using Distributed
-using LinearAlgebra
-using DataFrames
-using NearestNeighbors
-using StaticArrays
+using CSV: read
+using Random: randperm, shuffle
+using StatsBase: sample, weights
+using Distributed: pmap, nworkers
+using Distances: Metric, Euclidean, Mahalanobis, pairwise
+using LinearAlgebra: Diagonal, normalize, norm, ⋅
+using Distributions: ContinuousUnivariateDistribution
+using DataFrames: AbstractDataFrame, eltypes, nrow
+using NearestNeighbors: KDTree, knn, inrange
+using StaticArrays: SVector, MVector
+using RecipesBase: @recipe, @series, plot, RecipesBase
 using Parameters
-using RecipesBase
+
+import Distances: evaluate
+import Distributions: quantile, cdf
 
 # core concepts
 include("spatialobject.jl")
@@ -28,8 +31,6 @@ include("mappers.jl")
 include("tasks.jl")
 include("problems.jl")
 include("solutions.jl")
-include("solvers.jl")
-include("comparisons.jl")
 
 # developer tools
 include("macros.jl")
@@ -38,9 +39,14 @@ include("distances.jl")
 include("neighborhoods.jl")
 include("neighsearch.jl")
 include("distributions.jl")
+include("estimators.jl")
 include("partitions.jl")
 include("weighting.jl")
 include("statistics.jl")
+
+# solvers and comparisons
+include("solvers.jl")
+include("comparisons.jl")
 
 # plot recipes
 include("plotrecipes.jl")
@@ -53,6 +59,7 @@ export
   AbstractSpatialObject,
   domain,
   bounds,
+  boundvolume,
   npoints,
   coordtype,
   coordnames,
@@ -69,7 +76,7 @@ export
   origin, spacing,
 
   # spatial data
-  AbstractSpatialData,
+  AbstractData,
   CurveData,
   GeoDataFrame,
   PointSetData,
@@ -125,6 +132,8 @@ export
   AbstractSolver,
   AbstractEstimationSolver,
   AbstractSimulationSolver,
+  SeqSim, SeqSimParam,
+  CookieCutter, CookieCutterParam,
   solve, solve_single,
   preprocess,
 
@@ -132,6 +141,8 @@ export
   AbstractSolverComparison,
   AbstractEstimSolverComparison,
   AbstractSimSolverComparison,
+  VisualComparison,
+  CrossValidation,
   compare,
 
   # helper macros
@@ -163,9 +174,10 @@ export
 
   # distributions
   EmpiricalDistribution,
-  transform!,
-  quantile,
-  cdf,
+  transform!, quantile, cdf,
+
+  # estimators
+  fit, predict, status,
 
   # partitions
   SpatialPartition,
@@ -174,6 +186,7 @@ export
   AbstractSpatialFunctionPartitioner,
   UniformPartitioner,
   FractionPartitioner,
+  SLICPartitioner,
   BlockPartitioner,
   BallPartitioner,
   PlanePartitioner,

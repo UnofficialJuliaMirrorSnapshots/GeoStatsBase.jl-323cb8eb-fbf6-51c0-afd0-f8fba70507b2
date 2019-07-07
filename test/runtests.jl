@@ -1,7 +1,8 @@
 using GeoStatsBase
 using DelimitedFiles
-using Distances: Euclidean, Chebyshev
-using DataFrames: DataFrame
+using Distances
+using Distributions
+using DataFrames
 using Plots, VisualRegressionTests
 using Test, Pkg, Random
 
@@ -30,6 +31,7 @@ testfiles = [
   "neighborhoods.jl",
   "mappers.jl",
   "problems.jl",
+  "comparisons.jl",
   "utils.jl",
   "statistics.jl"
 ]
