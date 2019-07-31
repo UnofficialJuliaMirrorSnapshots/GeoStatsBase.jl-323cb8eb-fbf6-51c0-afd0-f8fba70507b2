@@ -7,14 +7,13 @@
 
 A method for searching neighbors in spatial `object` inside `neighborhood`.
 """
-struct NeighborhoodSearcher{O<:AbstractSpatialObject,
-                            N<:AbstractNeighborhood,T} <: AbstractNeighborSearcher
+struct NeighborhoodSearcher{O,N,K} <: AbstractNeighborSearcher
   # input fields
   object::O
   neigh::N
 
   # state fields
-  kdtree::T
+  kdtree::K
 end
 
 function NeighborhoodSearcher(object::O, neigh::N) where {O,N}
@@ -45,7 +44,7 @@ end
 # search method for ball neighborhood
 function search(xₒ::AbstractVector, searcher::NeighborhoodSearcher{O,N,T};
                 mask=nothing) where {O,N<:BallNeighborhood,T}
-  locs = inrange(searcher.kdtree, xₒ, radius(searcher.neigh), true)
+  locs = inrange(searcher.kdtree, xₒ, radius(searcher.neigh))
   if mask ≠ nothing
     neighbors = Vector{Int}()
     @inbounds for loc in locs

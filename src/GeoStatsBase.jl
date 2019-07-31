@@ -17,22 +17,16 @@ using StaticArrays: SVector, MVector
 using RecipesBase: @recipe, @series, plot, RecipesBase
 using Parameters
 
+import StatsBase: sample
 import Distances: evaluate
 import Distributions: quantile, cdf
 
-# core concepts
 include("spatialobject.jl")
 include("domains.jl")
 include("domainview.jl")
 include("data.jl")
 include("dataview.jl")
 include("collections.jl")
-include("mappers.jl")
-include("tasks.jl")
-include("problems.jl")
-include("solutions.jl")
-
-# developer tools
 include("macros.jl")
 include("paths.jl")
 include("distances.jl")
@@ -42,16 +36,15 @@ include("distributions.jl")
 include("estimators.jl")
 include("partitions.jl")
 include("weighting.jl")
-include("statistics.jl")
-
-# solvers and comparisons
+include("sampling.jl")
+include("learning.jl")
+include("mappers.jl")
+include("problems.jl")
 include("solvers.jl")
+include("solutions.jl")
+include("statistics.jl")
 include("comparisons.jl")
-
-# plot recipes
 include("plotrecipes.jl")
-
-# utilities
 include("utils.jl")
 
 export
@@ -65,7 +58,6 @@ export
   coordnames,
   coordinates,
   coordinates!,
-  nearestlocation,
 
   # domains
   AbstractDomain,
@@ -92,7 +84,7 @@ export
 
   # mappers
   AbstractMapper,
-  SimpleMapper,
+  NearestMapper,
   CopyMapper,
 
   # tasks
@@ -113,7 +105,6 @@ export
   domain,
   sourcedata,
   targetdata,
-  targetdomain,
   task,
   mapper,
   variables,
@@ -123,9 +114,9 @@ export
   nreals,
 
   # solutions
-  AbstractSolution,
   EstimationSolution,
   SimulationSolution,
+  LearningSolution,
 
   # solvers
   AbstractSolver,
@@ -176,6 +167,14 @@ export
   BoundedSearcher,
   search!, search,
   maxneighbors,
+  object,
+
+  # learning example
+  AbstractLearningExample,
+  AbstractLabeledExample,
+  AbstractUnlabeledExample,
+  LabeledPointExample,
+  UnlabeledPointExample,
 
   # distributions
   EmpiricalDistribution,
@@ -208,6 +207,12 @@ export
   AbstractWeighter,
   BlockWeighter,
   weight,
+
+  # sampling
+  AbstractSampler,
+  UniformSampler,
+  BallSampler,
+  sample,
 
   # statistics
   SpatialStatistic,

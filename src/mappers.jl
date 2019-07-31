@@ -15,10 +15,10 @@ abstract type AbstractMapper end
 Map the `targetvars` in `spatialdata` to `domain` with `mapper`.
 """
 Base.map(::AbstractData, ::AbstractDomain,
-         ::NTuple{N,Symbol}, ::AbstractMapper) where {N} = error("not implemented")
+         ::NTuple{N,Symbol}, ::AbstractMapper) where {N} = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("mappers/simple_mapper.jl")
+include("mappers/nearest_mapper.jl")
 include("mappers/copy_mapper.jl")

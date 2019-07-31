@@ -24,11 +24,18 @@ A solver for a geostatistical simulation problem.
 abstract type AbstractSimulationSolver <: AbstractSolver end
 
 """
+    AbstractLearningSolver
+
+A solver for a geostatistical learning problem.
+"""
+abstract type AbstractLearningSolver <: AbstractSolver end
+
+"""
     solve(problem, solver)
 
 Solve the `problem` with the `solver`.
 """
-solve(::AbstractProblem, ::AbstractSolver) = error("not implemented")
+solve(::AbstractProblem, ::AbstractSolver) = @error "not implemented"
 
 """
     solve(problem, solver)
@@ -91,10 +98,10 @@ solver are indenpendent one from another. GeoStats.jl will trigger
 the algorithm in parallel (if enough processes are available).
 """
 solve_single(::SimulationProblem, ::Symbol, ::AbstractSimulationSolver,
-             ::Any) = error("not implemented")
+             ::Any) = @error "not implemented"
 
 #------------------
 # IMPLEMENTATIONS
 #------------------
 include("solvers/sequential_simulation.jl")
-include("solvers/cookie_cutter.jl")
+include("solvers/cookie_cutter_simulation.jl")
