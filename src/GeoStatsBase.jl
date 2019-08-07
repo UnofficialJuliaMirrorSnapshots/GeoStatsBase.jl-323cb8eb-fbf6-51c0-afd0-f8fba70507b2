@@ -6,7 +6,8 @@ module GeoStatsBase
 
 using CSV: read
 using Random: randperm, shuffle
-using StatsBase: sample, weights
+using StatsBase: Histogram, sample, weights, midpoints
+using Distributions: median
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
@@ -14,10 +15,12 @@ using Distributions: ContinuousUnivariateDistribution
 using DataFrames: AbstractDataFrame, eltypes, nrow
 using NearestNeighbors: KDTree, knn, inrange
 using StaticArrays: SVector, MVector
-using RecipesBase: @recipe, @series, plot, RecipesBase
+using AverageShiftedHistograms: ash
+using RecipesBase
 using Parameters
 
-import StatsBase: sample
+import MLJBase
+import StatsBase: fit, sample
 import Distances: evaluate
 import Distributions: quantile, cdf
 
@@ -105,7 +108,7 @@ export
   domain,
   sourcedata,
   targetdata,
-  task,
+  tasks,
   mapper,
   variables,
   coordinates,
@@ -122,8 +125,11 @@ export
   AbstractSolver,
   AbstractEstimationSolver,
   AbstractSimulationSolver,
-  SeqSim, SeqSimParam,
-  CookieCutter, CookieCutterParam,
+  SeqSim,
+  SeqSimParam,
+  CookieCutter,
+  CookieCutterParam,
+  PointwiseLearn,
   solve, solve_single,
   preprocess,
 
@@ -218,6 +224,10 @@ export
   SpatialStatistic,
   mean, var,
   quantile,
+  histogram,
+
+  # plot recipes
+  cornerplot,
 
   # utilities
   readgeotable

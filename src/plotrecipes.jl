@@ -24,3 +24,8 @@ include("plotrecipes/solutions/simulation.jl")
 # partitions and weights
 include("plotrecipes/partitions.jl")
 include("plotrecipes/weighting.jl")
+
+# distribution plots
+include("plotrecipes/distplot1D.jl")
+include("plotrecipes/distplot2D.jl")
+include("plotrecipes/cornerplot.jl")
