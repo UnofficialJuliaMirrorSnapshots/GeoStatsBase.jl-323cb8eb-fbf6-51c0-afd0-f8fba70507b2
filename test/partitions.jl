@@ -54,10 +54,56 @@
   end
 
   @testset "FractionPartitioner" begin
+    grid = RegularGrid{Float64}(10,10)
+
+    p = partition(grid, FractionPartitioner(0.5))
+    @test npoints(p[1]) == npoints(p[2]) == 50
+    @test length(p) == 2
+
+    p = partition(grid, FractionPartitioner(0.7))
+    @test npoints(p[1]) == 70
+    @test npoints(p[2]) == 30
+
+    p = partition(grid, FractionPartitioner(0.3))
+    @test npoints(p[1]) == 30
+    @test npoints(p[2]) == 70
+  end
+
+  @testset "SLICPartitioner" begin
     # TODO
   end
 
   @testset "BlockPartitioner" begin
+    grid = RegularGrid{Float64}(10,10)
+
+    p = partition(grid, BlockPartitioner(5.))
+    @test length(p) == 4
+    @test all(npoints.(p) .== 25)
+  end
+
+  @testset "NormalPointPartitioner" begin
+    grid = RegularGrid{Float64}(10,10)
+
+    p = partition(grid, NormalPointPartitioner((0.,1.), (5.,5.1)))
+    @test npoints(p[1]) == 40
+    @test npoints(p[2]) == 60
+
+    # all points in X₁ are above those in X₂
+    X₁ = coordinates(p[1])
+    X₂ = coordinates(p[2])
+    m₁ = minimum(X₁, dims=2)
+    M₂ = maximum(X₂, dims=2)
+    @test all(X₁[2,j] > M₂[2] for j in 1:size(X₁,2))
+    @test all(X₂[2,j] < m₁[2] for j in 1:size(X₂,2))
+
+    # flipping normal direction is equivalent to swapping subsets
+    p₁ = partition(grid, NormalPointPartitioner(( 1.,0.), (5.1,5.)))
+    p₂ = partition(grid, NormalPointPartitioner((-1.,0.), (5.1,5.)))
+    @test npoints(p₁[1]) == npoints(p₂[2]) == 40
+    @test npoints(p₁[2]) == npoints(p₂[1]) == 60
+  end
+
+  @testset "NormalFractionPartitioner" begin
     # TODO
   end
 

@@ -32,6 +32,7 @@ include("dataview.jl")
 include("collections.jl")
 include("macros.jl")
 include("paths.jl")
+include("shapes.jl")
 include("distances.jl")
 include("neighborhoods.jl")
 include("neighborsearch.jl")
@@ -39,6 +40,7 @@ include("distributions.jl")
 include("estimators.jl")
 include("partitions.jl")
 include("weighting.jl")
+include("covering.jl")
 include("sampling.jl")
 include("learning.jl")
 include("mappers.jl")
@@ -55,7 +57,6 @@ export
   AbstractSpatialObject,
   domain,
   bounds,
-  boundvolume,
   npoints,
   coordtype,
   coordnames,
@@ -152,6 +153,17 @@ export
   SourcePath,
   ShiftedPath,
 
+  # shapes
+  AbstractShape,
+  Rectangle,
+  center,
+  lowerleft,
+  upperright,
+  side,
+  sides,
+  diagonal,
+  volume,
+
   # distances
   Ellipsoidal,
   evaluate,
@@ -198,6 +210,8 @@ export
   FractionPartitioner,
   SLICPartitioner,
   BlockPartitioner,
+  NormalPointPartitioner,
+  NormalFractionPartitioner,
   BallPartitioner,
   PlanePartitioner,
   DirectionPartitioner,
@@ -213,6 +227,11 @@ export
   AbstractWeighter,
   BlockWeighter,
   weight,
+
+  # covering
+  AbstractCoverer,
+  RectangleCoverer,
+  cover, boundbox,
 
   # sampling
   AbstractSampler,

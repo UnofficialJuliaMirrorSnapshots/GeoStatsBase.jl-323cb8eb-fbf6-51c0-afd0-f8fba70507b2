@@ -44,6 +44,14 @@ Return the number of subsets in `partition`.
 Base.length(partition::SpatialPartition) = length(partition.subsets)
 
 """
+    Base.getindex(partition, ind)
+
+Return `ind`-th object in the `partition` as a view.
+"""
+Base.getindex(partition::SpatialPartition, ind::Int) =
+  view(partition.object, partition.subsets[ind])
+
+"""
     AbstractPartitioner
 
 A method for partitioning spatial objects.
@@ -129,6 +137,8 @@ include("partitions/uniform_partitioner.jl")
 include("partitions/fraction_partitioner.jl")
 include("partitions/slic_partitioner.jl")
 include("partitions/block_partitioner.jl")
+include("partitions/normal_point_partitioner.jl")
+include("partitions/normal_fraction_partitioner.jl")
 include("partitions/ball_partitioner.jl")
 include("partitions/plane_partitioner.jl")
 include("partitions/direction_partitioner.jl")
