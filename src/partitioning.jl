@@ -3,17 +3,20 @@
 # ------------------------------------------------------------------
 
 """
-    SpatialPartition
+    SpatialPartition(object, subsets, metadata=Dict())
 
-A partition of spatial data.
+A partition of a spatial `object` into `subsets`.
+Optionally, save `metadata` in the partitioning
+algorithm.
 """
 struct SpatialPartition{O<:AbstractSpatialObject}
   object::O
   subsets::Vector{Vector{Int}}
+  metadata::Dict
 end
 
-SpatialPartition(object, subsets) =
-  SpatialPartition{typeof(object)}(object, subsets)
+SpatialPartition(object, subsets, metadata=Dict()) =
+  SpatialPartition{typeof(object)}(object, subsets, metadata)
 
 """
     subsets(partition)
@@ -22,6 +25,13 @@ Return the subsets of indices in spatial object
 that make up the `partition`.
 """
 subsets(partition::SpatialPartition) = partition.subsets
+
+"""
+    metadata(partition)
+
+Return the metadata dictionary saved in the partition.
+"""
+metadata(partition::SpatialPartition) = partition.metadata
 
 """
     Base.iterate(partition)
@@ -50,6 +60,15 @@ Return `ind`-th object in the `partition` as a view.
 """
 Base.getindex(partition::SpatialPartition, ind::Int) =
   view(partition.object, partition.subsets[ind])
+
+"""
+    Base.getindex(partition, inds)
+
+Return the ind-th object in the `partition` for
+each ind in `inds`.
+"""
+Base.getindex(partition::SpatialPartition, inds::AbstractVector{Int}) =
+  [getindex(partition, ind) for ind in inds]
 
 """
     AbstractPartitioner
@@ -133,15 +152,15 @@ end
 #------------------
 # IMPLEMENTATIONS
 #------------------
-include("partitions/uniform_partitioner.jl")
-include("partitions/fraction_partitioner.jl")
-include("partitions/slic_partitioner.jl")
-include("partitions/block_partitioner.jl")
-include("partitions/normal_point_partitioner.jl")
-include("partitions/normal_fraction_partitioner.jl")
-include("partitions/ball_partitioner.jl")
-include("partitions/plane_partitioner.jl")
-include("partitions/direction_partitioner.jl")
-include("partitions/function_partitioner.jl")
-include("partitions/product_partitioner.jl")
-include("partitions/hierarchical_partitioner.jl")
+include("partitioning/uniform.jl")
+include("partitioning/fraction.jl")
+include("partitioning/slic.jl")
+include("partitioning/block.jl")
+include("partitioning/bisect_point.jl")
+include("partitioning/bisect_fraction.jl")
+include("partitioning/ball.jl")
+include("partitioning/plane.jl")
+include("partitioning/direction.jl")
+include("partitioning/function.jl")
+include("partitioning/product.jl")
+include("partitioning/hierarchical.jl")

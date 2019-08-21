@@ -7,7 +7,7 @@ module GeoStatsBase
 using CSV: read
 using Random: randperm, shuffle
 using StatsBase: Histogram, sample, weights, midpoints
-using Distributions: median
+using Distributions: median, mode
 using Distributed: pmap, nworkers
 using Distances: Metric, Euclidean, Mahalanobis, pairwise
 using LinearAlgebra: Diagonal, normalize, norm, ⋅
@@ -38,7 +38,7 @@ include("neighborhoods.jl")
 include("neighborsearch.jl")
 include("distributions.jl")
 include("estimators.jl")
-include("partitions.jl")
+include("partitioning.jl")
 include("weighting.jl")
 include("covering.jl")
 include("sampling.jl")
@@ -47,6 +47,7 @@ include("mappers.jl")
 include("problems.jl")
 include("solvers.jl")
 include("solutions.jl")
+include("errors.jl")
 include("statistics.jl")
 include("comparisons.jl")
 include("plotrecipes.jl")
@@ -98,7 +99,14 @@ export
   RegressionTask,
   ClassificationTask,
   ClusteringTask,
+  CompositeTask,
   features, label,
+  issupervised,
+  iscomposite,
+
+  # models
+  issupervised,
+  isprobabilistic,
 
   # problems
   AbstractProblem,
@@ -133,6 +141,11 @@ export
   PointwiseLearn,
   solve, solve_single,
   preprocess,
+
+  # errors
+  AbstractErrorEstimator,
+  LeaveBallOut,
+  estimate_error,
 
   # comparisons
   AbstractSolverComparison,
@@ -210,8 +223,8 @@ export
   FractionPartitioner,
   SLICPartitioner,
   BlockPartitioner,
-  NormalPointPartitioner,
-  NormalFractionPartitioner,
+  BisectPointPartitioner,
+  BisectFractionPartitioner,
   BallPartitioner,
   PlanePartitioner,
   DirectionPartitioner,

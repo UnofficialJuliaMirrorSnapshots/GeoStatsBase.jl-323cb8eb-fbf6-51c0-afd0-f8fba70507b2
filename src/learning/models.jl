@@ -30,6 +30,10 @@ function learn(task::AbstractLearningTask, geodata::AbstractData, model::MLJBase
   LearnedModel(model, θ)
 end
 
+function learn(task::CompositeTask, geodata::AbstractData, model::MLJBase.Model)
+  @error "not implemented"
+end
+
 """
     perform(task, geodata, lmodel)
 
@@ -39,9 +43,15 @@ function perform(task::AbstractLearningTask, geodata::AbstractData, lmodel::Lear
   X = geodata[1:npoints(geodata),collect(features(task))]
   if issupervised(task)
     ŷ = MLJBase.predict(lmodel.model, lmodel.θ, X)
+    res = isprobabilistic(lmodel.model) ? mode.(ŷ) : ŷ
+    var = label(task)
   else
     @error "not implemented"
   end
 
-  Dict(label(task) => ŷ)
+  Dict(var => res)
+end
+
+function perform(task::CompositeTask, geodata::AbstractData, lmodel::LearnedModel)
+  @error "not implemented"
 end
