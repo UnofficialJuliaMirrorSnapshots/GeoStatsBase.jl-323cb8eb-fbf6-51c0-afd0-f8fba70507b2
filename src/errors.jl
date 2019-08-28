@@ -18,7 +18,13 @@ Estimate error of `solver` in a given `problem` with
 estimate_error(::AbstractSolver, ::AbstractProblem,
                ::AbstractErrorEstimator) = @error "not implemented"
 
+compare(solvers::AbstractVector{S}, problem::P,
+        eestimator::AbstractErrorEstimator) where {S<:AbstractSolver,
+                                                   P<:AbstractProblem} =
+  [estimate_error(solver, problem, eestimator) for solver in solvers]
+
 #------------------
 # IMPLEMENTATIONS
 #------------------
 include("errors/leave_ball_out.jl")
+include("errors/block_cross_validation.jl")

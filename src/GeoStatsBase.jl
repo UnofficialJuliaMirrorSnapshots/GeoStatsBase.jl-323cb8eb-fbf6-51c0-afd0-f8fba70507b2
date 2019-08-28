@@ -117,7 +117,7 @@ export
   domain,
   sourcedata,
   targetdata,
-  tasks,
+  task,
   mapper,
   variables,
   coordinates,
@@ -145,12 +145,15 @@ export
   # errors
   AbstractErrorEstimator,
   LeaveBallOut,
+  BlockCrossValidation,
   estimate_error,
+  compare,
 
   # comparisons
   AbstractSolverComparison,
   AbstractEstimSolverComparison,
   AbstractSimSolverComparison,
+  AbstractLearnSolverComparison,
   VisualComparison,
   CrossValidation,
   compare,
@@ -233,6 +236,7 @@ export
   HierarchicalPartitioner,
   partition,
   subsets,
+  metadata,
   →,
 
   # weighting
