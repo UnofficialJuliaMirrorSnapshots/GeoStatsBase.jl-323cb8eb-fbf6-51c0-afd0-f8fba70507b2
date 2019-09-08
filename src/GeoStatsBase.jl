@@ -19,6 +19,7 @@ using AverageShiftedHistograms: ash
 using RecipesBase
 using Parameters
 
+import Tables
 import MLJBase
 import StatsBase: fit, sample
 import Distances: evaluate
@@ -79,7 +80,6 @@ export
   RegularGridData,
   StructuredGridData,
   variables,
-  valuetype,
   valid,
 
   # collections
