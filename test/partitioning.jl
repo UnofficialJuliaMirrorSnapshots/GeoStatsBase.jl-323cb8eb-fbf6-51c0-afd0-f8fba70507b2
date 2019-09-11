@@ -104,11 +104,46 @@
   end
 
   @testset "BisectFractionPartitioner" begin
-    # TODO
+    grid = RegularGrid{Float64}(10,10)
+
+    p = partition(grid, BisectFractionPartitioner((1.,0.), 0.2))
+    @test npoints(p[1]) == 20
+    @test npoints(p[2]) == 80
+
+    # all points in X₁ are to the left of X₂
+    X₁ = coordinates(p[1])
+    X₂ = coordinates(p[2])
+    M₁ = maximum(X₁, dims=2)
+    m₂ = minimum(X₂, dims=2)
+    @test all(X₁[1,j] < m₂[1] for j in 1:size(X₁,2))
+    @test all(X₂[1,j] > M₁[1] for j in 1:size(X₂,2))
+
+    # flipping normal direction is equivalent to swapping subsets
+    p₁ = partition(grid, BisectFractionPartitioner(( 1.,0.), 0.2))
+    p₂ = partition(grid, BisectFractionPartitioner((-1.,0.), 0.8))
+    @test npoints(p₁[1]) == npoints(p₂[2]) == 20
+    @test npoints(p₁[2]) == npoints(p₂[1]) == 80
   end
 
   @testset "BallPartitioner" begin
-    # TODO
+    pset = PointSet([
+      0 1 1 0 0.2
+      0 0 1 1 0.2
+    ])
+
+    # 3 balls with 1 point, and 1 ball with 2 points
+    p = partition(pset, BallPartitioner(0.5))
+    n = npoints.(p)
+    @test length(p) == 4
+    @test count(i->i==1, n) == 3
+    @test count(i->i==2, n) == 1
+    @test setify(subsets(p)) == setify([[1,5],[2],[3],[4]])
+
+    # 5 balls with 1 point each
+    p = partition(pset, BallPartitioner(0.2))
+    @test length(p) == 5
+    @test all(npoints.(p) .== 1)
+    @test setify(subsets(p)) == setify([[1],[2],[3],[4],[5]])
   end
 
   @testset "PlanePartitioner" begin
