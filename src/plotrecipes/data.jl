@@ -7,8 +7,7 @@
   sdomain = domain(sdata)
 
   # valid variables
-  vars = GeoStatsBase.variables(sdata)
-  validvars = sort([var for (var, V) in vars if V <: Number])
+  validvars = sort([var for (var, V) in GeoStatsBase.variables(sdata)])
 
   # plot all variables by default
   variables == nothing && (variables = validvars)
@@ -21,7 +20,8 @@
     # retrieve valid values
     vals = map(1:npoints(sdata)) do ind
       if isvalid(sdata, ind, var)
-        sdata[ind,var]
+        v = sdata[ind,var]
+        v isa Number ? v : get(v)
       else
         NaN
       end
