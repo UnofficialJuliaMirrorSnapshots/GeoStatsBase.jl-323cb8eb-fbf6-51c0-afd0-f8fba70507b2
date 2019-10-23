@@ -1,4 +1,4 @@
-@testset "Spatial domain" begin
+@testset "Domains" begin
   @testset "Curve" begin
     c = Curve([j for i in 1:3, j in 1:5])
     @test ndims(c) == 3
@@ -81,7 +81,7 @@
       @plottest plot(RegularGrid{Float64}(10,20,30)) joinpath(datadir,"grid3D.png") !istravis
       @plottest plot(RegularGrid{Float64}(10),[1,2,3,4,5,5,4,3,2,1]) joinpath(datadir,"grid1D-data.png") !istravis
       @plottest plot(RegularGrid{Float64}(10,10),1:100) joinpath(datadir,"grid2D-data.png") !istravis
-      @plottest plot(RegularGrid{Float64}(10,10,10),zeros(1000)) joinpath(datadir,"grid3D-data.png") !istravis
+      # @plottest plot(RegularGrid{Float64}(10,10,10),zeros(1000)) joinpath(datadir,"grid3D-data.png") !istravis
     end
   end
 
